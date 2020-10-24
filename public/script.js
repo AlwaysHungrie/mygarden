@@ -50,7 +50,8 @@ function stopFlow () {
   fetch('/stop', {
     method: 'POST',
     body: JSON.stringify({
-      'command': 'stop'
+      'command': 'stop',
+      'waterLevel': waterLevel,
     })
   });
 

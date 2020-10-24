@@ -10,6 +10,7 @@ let pumpTimer;
 let pumpActive = false;
 
 app.use(express.static(__dirname + '/public'));
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname+'/index.html');
@@ -36,6 +37,7 @@ app.post('/start', (req, res) => {
 
 app.post('/stop', (req, res) => {
   console.log('stop')
+  console.log(req.body.waterLevel);
   relay.writeSync(1);
   pumpActive = false;
 
