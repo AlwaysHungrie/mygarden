@@ -3,68 +3,72 @@ const icon = document.querySelector('.water-icon');
 const shadow = document.querySelector('.water-shadow');
 const contents = document.querySelector('.water-container-contents');
 
-let emitInterval;
-let waterLevel = 0;
-let buttonActive = false;
-let hardStop = false;
+fetch('/waterLevel', {
+  method: 'GET',
+}).then(response => response.json()).then(data => {
+  waterLevel = parseInt(data.waterLevel);
+  let emitInterval;
+  let buttonActive = false;
+  let hardStop = false;
 
-waterButton.addEventListener('mousedown', () => {
-  if (hardStop) return;
-  
-  console.log('flow activated')
-  fetch('/start', {
-    method: 'POST',
-    body: JSON.stringify({
-      'command': 'start'
-    })
-  });
+  waterButton.addEventListener('mousedown', () => {
+    if (hardStop) return;
+    
+    console.log('flow activated')
+    fetch('/start', {
+      method: 'POST',
+      body: JSON.stringify({
+        'command': 'start'
+      })
+    });
 
-  buttonActive = true;
-  icon.classList.add('water-icon-active');
-  shadow.classList.add('water-shadow-active');
+    buttonActive = true;
+    icon.classList.add('water-icon-active');
+    shadow.classList.add('water-shadow-active');
 
-  emitInterval = setInterval(() => {
-    waterLevel += 0.5;
-    if (waterLevel >= 100) {
-      stopFlow();
-      waterButton.removeEventListener('mouseup', stopFlow);
-      hardStop = true;
-    }
-    contents.style.transform = `translateY(${waterLevel}%)`;
-
-    fetch('/status', {
-      method: 'GET',
-    }).then(response => response.json()).then(data => {
-      if (data.status == false && buttonActive == true) {
+    emitInterval = setInterval(() => {
+      waterLevel += 0.5;
+      if (waterLevel >= 100) {
         stopFlow();
         waterButton.removeEventListener('mouseup', stopFlow);
+        hardStop = true;
       }
-    });
-  }, 100);
+      contents.style.transform = `translateY(${waterLevel}%)`;
 
-  waterButton.addEventListener('mouseup', stopFlow);
-});
+      fetch('/status', {
+        method: 'GET',
+      }).then(response => response.json()).then(data => {
+        if (data.status == false && buttonActive == true) {
+          stopFlow();
+          waterButton.removeEventListener('mouseup', stopFlow);
+        }
+      });
+    }, 100);
 
-function stopFlow () {
-  console.log('flow stopped')
-  fetch('/stop', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      "command": "stop",
-      "waterLevel": waterLevel,
-    })
+    waterButton.addEventListener('mouseup', stopFlow);
   });
 
-  icon.classList.remove('water-icon-active');
-  shadow.classList.remove('water-shadow-active');
-  buttonActive = false;
-  clearInterval(emitInterval);
-}
+  function stopFlow () {
+    console.log('flow stopped')
+    fetch('/stop', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        "command": "stop",
+        "waterLevel": waterLevel,
+      })
+    });
 
-waterButton.addEventListener('mouseleave', () => {
-  if (buttonActive) {
-    stopFlow();
+    icon.classList.remove('water-icon-active');
+    shadow.classList.remove('water-shadow-active');
+    buttonActive = false;
+    clearInterval(emitInterval);
   }
-  waterButton.removeEventListener('mouseup', stopFlow);
+
+  waterButton.addEventListener('mouseleave', () => {
+    if (buttonActive) {
+      stopFlow();
+    }
+    waterButton.removeEventListener('mouseup', stopFlow);
+  });
 });

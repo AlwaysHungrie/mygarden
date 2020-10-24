@@ -25,6 +25,13 @@ app.get('/waterLevel', (req, res) => {
   });
 });
 
+app.get('/resetWaterLevel', (req, res) => {
+  fs.writeFile('waterlevel', 0 , function(err) {
+    if (err) throw err;
+    res.json({'status': 'done'});
+  });
+})
+
 app.get('/status', (req, res) => {
   res.json({'status': pumpActive});
 })
