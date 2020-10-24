@@ -1,11 +1,12 @@
 const express = require('express');
-const e = require('express');
 const app = express();
-var http = require('http').createServer(app);
+
 var io = require('socket.io')(http);
 var Gpio = require('onoff').Gpio;
-
 var relay = new Gpio(4, 'out');
+
+let pumpTimer;
+let pumpActive = false;
 
 app.use(express.static(__dirname + '/public'));
 
@@ -13,22 +14,32 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname+'/index.html');
 });
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
+app.get('/status', (req, res) => {
+  res.json({'status': pumpActive});
+})
 
-  socket.on('pump', (pumpState) => {
-    console.log('message: ' + pumpState.status);
-    if (pumpState.status === 'on')
-      relay.writeSync(0);
-    else if (pumpState.status === 'off')
-      relay.writeSync(1);
-  });
+app.post('/start', (req, res) => {
+  console.log('starting pump')
+  pumpActive = true;
+  relay.writeSync(0);
+
+  res.json({'status': 'done'});
+
+  pumpTimer = setTimeout(() => {
+    console.log('stopping pump')
+    pumpActive = false;
+    relay.writeSync(0);
+    
+  },10000);
 });
 
-http.listen(3005, () => {
-  console.log('listening on *:3005');
+app.post('/stop', (req, res) => {
+  console.log('stop')
+  relay.writeSync(1);
+  pumpActive = false;
+
+  res.json({'status': 'done'});
+  clearTimeout(pumpTimer);
 });
-// app.listen(3005, () => console.log('start 3005'));
+
+app.listen(3005, () => console.log('start 3005'));
