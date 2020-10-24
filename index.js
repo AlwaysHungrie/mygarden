@@ -1,9 +1,10 @@
 const express = require('express');
 const app = express();
 
-var io = require('socket.io')(http);
+// var io = require('socket.io')(http);
 var Gpio = require('onoff').Gpio;
 var relay = new Gpio(4, 'out');
+relay.writeSync(1);
 
 let pumpTimer;
 let pumpActive = false;
@@ -28,7 +29,7 @@ app.post('/start', (req, res) => {
   pumpTimer = setTimeout(() => {
     console.log('stopping pump')
     pumpActive = false;
-    relay.writeSync(0);
+    relay.writeSync(1);
     
   },10000);
 });

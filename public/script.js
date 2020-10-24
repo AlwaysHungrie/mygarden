@@ -35,7 +35,7 @@ waterButton.addEventListener('mousedown', () => {
     fetch('/status', {
       method: 'GET',
     }).then(response => response.json()).then(data => {
-      if (data.status == false) {
+      if (data.status == false && buttonActive == true) {
         stopFlow();
         waterButton.removeEventListener('mouseup', stopFlow);
       }
