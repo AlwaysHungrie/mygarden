@@ -1,4 +1,6 @@
+const fs = require('fs');
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 
 // var io = require('socket.io')(http);
@@ -14,6 +16,13 @@ app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname+'/index.html');
+});
+
+app.get('/waterLevel', (req, res) => {
+  fs.readFile('waterlevel', function(err, data) {
+    if (err) throw err;
+    res.json({'waterLevel': data});
+  });
 });
 
 app.get('/status', (req, res) => {
@@ -36,8 +45,12 @@ app.post('/start', (req, res) => {
 });
 
 app.post('/stop', (req, res) => {
-  console.log('stop')
-  console.log(req.body.waterLevel);
+  // console.log('stop')
+  // console.log(req);
+  fs.writeFile('waterlevel', req.body.waterLevel , function(err) {
+    if (err) throw err;
+  });
+
   relay.writeSync(1);
   pumpActive = false;
 

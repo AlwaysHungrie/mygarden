@@ -49,9 +49,10 @@ function stopFlow () {
   console.log('flow stopped')
   fetch('/stop', {
     method: 'POST',
+    headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
-      'command': 'stop',
-      'waterLevel': waterLevel,
+      "command": "stop",
+      "waterLevel": waterLevel,
     })
   });
 
