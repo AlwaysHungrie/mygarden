@@ -1,0 +1,128 @@
+body {
+  height: 100vh;
+  margin: 0;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  background: #FFDDAE;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.water-button {
+  background: #B5E655;
+  height: 128px;
+  width: 128px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 24px;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12);
+  margin: auto 0;
+}
+
+.water-icon {
+  height: 64px;
+  margin: auto;
+  position: relative;
+  left: 22px;
+  top: 36px;
+  z-index: 10;
+  transform: scale(1.25);
+  transition: transform 0.4s ease-in;
+  user-drag: none; 
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.water-icon-active {
+  transform: scale(0.95);
+  transition: transform 1s ease-out;
+}
+
+.water-shadow {
+  position: relative;
+  height: 81px;
+  align-self: flex-end;
+  right: -44px;
+  bottom: 10px;
+  transition: opacity 0.4s ease-in;
+  user-drag: none; 
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.water-shadow-active {
+  /* transform: skew(8deg, 37deg) translate(-12px, 40px); */
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+
+.water-container {
+  width: 70%;
+  height: 50%;
+  max-width: 340px;
+  border-left: 6px solid #BFBFBD;
+  border-right: 6px solid #BFBFBD;
+}
+
+.water-container-contents {
+  height: 100%;
+  transition: transform 150ms ease;
+}
+
+.wave-container {
+  overflow: hidden;
+  width: 100%;
+  height: 6vh;
+}
+
+@keyframes moveWave{
+  0% {transform: translateX(-27%) translateY(0%)}
+  25% {transform: translateX(-20.75%) translateY(12%)}
+  50% {transform: translateX(-14.5%) translateY(24%)}
+  75% {transform: translateX(-8.25%) translateY(12%)}
+  100% {transform: translateX(-2%) translateY(0%)}
+}
+
+.wave {
+  height: 100%;
+  animation: moveWave 1.3s linear normal infinite;
+  position: relative;
+  top: 12%;
+}
+
+@keyframes moveWaveBack{
+  0% {transform: translateX(-38%)}
+  100% {transform: translateX(-13%)}
+}
+
+.waveback {
+  height: 100%;
+  animation: moveWaveBack 4s linear normal infinite;
+  position: relative;
+  top: -100%;
+  z-index: -1;
+}
+
+.glass {
+  /* background-image: linear-gradient(rgba(191, 191, 189, 0.5), rgba(191, 191, 189, 0.5)), linear-gradient(#3F9BBF, #3F9BBF); */
+  background: rgba(191, 191, 189, 0.4);
+  height: 100%;
+  position: relative;
+  bottom: 100%;
+}
+
+.water {
+  background: #3F9BBF;
+  height: 100%;
+}
