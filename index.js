@@ -1,4 +1,7 @@
 const fs = require('fs');
+const path = require('path');
+const waterlevel = path.join(__dirname, '/waterlevel');
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
@@ -19,14 +22,18 @@ app.get('/', (req, res) => {
 });
 
 app.get('/waterLevel', (req, res) => {
-  fs.readFile('waterlevel', function(err, data) {
-    if (err) throw err;
-    res.json({'waterLevel': data});
-  });
+  try { 
+    fs.readFile(waterlevel, "utf8", function(err, data) {
+      if (err) throw err;
+      res.json({'waterLevel': data});
+    });
+  } catch (err) {
+    res.json({'waterlevel': '0'});	
+  }
 });
 
 app.get('/resetWaterLevel', (req, res) => {
-  fs.writeFile('waterlevel', 0 , function(err) {
+  fs.writeFile(waterlevel, 0 , function(err) {
     if (err) throw err;
     res.json({'status': 'done'});
   });
@@ -54,7 +61,7 @@ app.post('/start', (req, res) => {
 app.post('/stop', (req, res) => {
   // console.log('stop')
   // console.log(req);
-  fs.writeFile('waterlevel', req.body.waterLevel , function(err) {
+  fs.writeFile(waterlevel, req.body.waterLevel , function(err) {
     if (err) throw err;
   });
 

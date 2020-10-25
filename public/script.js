@@ -6,7 +6,11 @@ const contents = document.querySelector('.water-container-contents');
 fetch('/waterLevel', {
   method: 'GET',
 }).then(response => response.json()).then(data => {
-  waterLevel = parseInt(data.waterLevel);
+  
+  console.log(data.waterLevel);
+  let waterLevel = parseInt(data.waterLevel);
+  contents.style.transform =  `translateY(${waterLevel}%)`;
+
   let emitInterval;
   let buttonActive = false;
   let hardStop = false;
